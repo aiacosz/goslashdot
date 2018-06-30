@@ -2,8 +2,11 @@ package brute
 
 import (
 	"fmt"
+	"strings"
 )
 
 func Teste() {
-	fmt.Println("Calling")
+	st := strings.Repeat("#", 10)
+	fmt.Println(st)
+
 }
