@@ -7,5 +7,5 @@ Parcial usage:  go run main.go -url https://www.example/content.php?seite= -endp
 
 ```
 
-![alt text]()
+![alt text](https://raw.githubusercontent.com/aiacosz/goslashdot/master/found.png)
 
