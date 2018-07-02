@@ -7,5 +7,13 @@ Parcial usage:  go run main.go -url https://www.example/content.php?seite= -endp
 
 ```
 
-![alt text](https://raw.githubusercontent.com/aiacosz/goslashdot/master/found.png)
+![alt text](https://raw.githubusercontent.com/aiacosz/goslashdot/master/found1.png)
 
+
+
+###### TODO
+
+1 - colors output
+2 - goroutines
+3 - threads
+4 - multiple targets
