@@ -168,8 +168,9 @@ func main() {
 
 	// regex to find
 	etcPasswd := regexp.MustCompile(`root:(.*)\s\w(.*)`)
-	etcHosts := regexp.MustCompile(`\w*\:\w\:[0-9]*\:[0-9]*\:[a-zA-Z_-]*\:[\/a-zA-Z0-9]*[ \t]+:[\/a-zA-Z0-9]*`)
-	htAcess := regexp.MustCompile(`AccessFileName|RewriteEngine|allow from all|deny from all|DirectoryIndex|AuthUserFile|AuthGroupFile`)
+	etcHosts := regexp.MustCompile(`(?m)^\s*([0-9.:]+)\s+([\w.-]+)`)
+	htAcess := regexp.MustCompile(`AccessFileName|RewriteEngine|allow from all|deny from all|DirectoryIndex|AuthUserFile|AuthGroupFile|IfModule`)
+	etcShadow := regexp.MustCompile(`^[a-z0-9][a-z0-9]*::`)
 
 	count := 0
 	for count != (*goin + 1) {
@@ -185,17 +186,22 @@ func main() {
 					// hell if's to make sure that pattern is finding :)
 					matchEtcPasswd := etcPasswd.FindStringSubmatch(response)
 					if len(matchEtcPasswd) != 0 {
-						fmt.Printf("---> [+] Vulnerable: %s\n", matchEtcPasswd[1])
+						fmt.Printf("---> [+] ETC/PASSWD FOUND: %s\n", matchEtcPasswd[1])
 					}
 
 					matchEtcHosts := etcHosts.FindStringSubmatch(response)
 					if len(matchEtcHosts) != 0 {
-						fmt.Printf("---> [+] Vulnerable: %s\n", matchEtcHosts[1])
+						fmt.Printf("---> [+] ETC/HOSTS: %s\n", matchEtcHosts[1])
 					}
 
 					matchHtAcess := htAcess.FindStringSubmatch(response)
 					if len(matchHtAcess) != 0 {
-						fmt.Printf("---> [+] Vulnerable: %s\n", matchHtAcess[1])
+						fmt.Printf("---> [+] HTACESS FOUND: %s\n", matchHtAcess[1])
+					}
+
+					matchShadow := etcShadow.FindStringSubmatch(response)
+					if len(matchShadow) != 0 {
+						fmt.Printf("---> [+] ETC/SHADOW FOUND: %s\n", matchShadow[1])
 					}
 
 				}
