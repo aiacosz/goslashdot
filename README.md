@@ -1,4 +1,4 @@
-# goslashdot
+# goslahdot
 
 ### Making Path Traversal izi :p
 
@@ -13,7 +13,7 @@ Parcial usage:  go run main.go -url https://www.example/content.php?seite= -endp
 
 ###### TODO
 
-1 - colors output
-2 - goroutines
+1 - colors output -- DONE
+2 - goroutines -- working
 3 - threads
 4 - multiple targets

