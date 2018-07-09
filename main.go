@@ -145,6 +145,41 @@ func validateURL(url string) {
 
 }
 
+func findETCPasswd(response string) {
+	etcPasswd := regexp.MustCompile(`root:(.*)\s\w(.*)`)
+	matchEtcPasswd := etcPasswd.FindStringSubmatch(response)
+	if len(matchEtcPasswd) != 0 {
+		fmt.Printf(utils.SetColorGreen("---> [+] ETC/PASSWD FOUND: %s\n "), matchEtcPasswd[1])
+
+	}
+}
+
+func findETCHosts(response string) {
+	etcHosts := regexp.MustCompile(`(?m)^\s*([0-9.:]+)\s+([\w.-]+)`)
+	matchEtcHosts := etcHosts.FindStringSubmatch(response)
+	if len(matchEtcHosts) != 0 {
+		fmt.Printf("---> [+] ETC/HOSTS: %s\n", matchEtcHosts[1])
+	}
+}
+
+func findHtAcess(response string) {
+	htAcess := regexp.MustCompile(`AccessFileName|RewriteEngine|allow from all|deny from all|DirectoryIndex|AuthUserFile|AuthGroupFile|IfModule`)
+	matchHtAcess := htAcess.FindStringSubmatch(response)
+	if len(matchHtAcess) != 0 {
+		fmt.Printf("---> [+] HTACESS FOUND: %s\n", matchHtAcess[1])
+	}
+
+}
+
+func findetcShadow(response string) {
+	etcShadow := regexp.MustCompile(`^[a-z0-9][a-z0-9]*::`)
+	matchShadow := etcShadow.FindStringSubmatch(response)
+	if len(matchShadow) != 0 {
+		fmt.Printf("---> [+] ETC/SHADOW FOUND: %s", matchShadow[1])
+	}
+
+}
+
 func main() {
 
 	utils.Banner()
@@ -170,12 +205,6 @@ func main() {
 
 	fmt.Println(utils.SetColorYela("[+] INIT REQUESTS [+]"))
 
-	// regex to find
-	etcPasswd := regexp.MustCompile(`root:(.*)\s\w(.*)`)
-	etcHosts := regexp.MustCompile(`(?m)^\s*([0-9.:]+)\s+([\w.-]+)`)
-	htAcess := regexp.MustCompile(`AccessFileName|RewriteEngine|allow from all|deny from all|DirectoryIndex|AuthUserFile|AuthGroupFile|IfModule`)
-	etcShadow := regexp.MustCompile(`^[a-z0-9][a-z0-9]*::`)
-
 	count := 0
 	for count != (*goin + 1) {
 		fmt.Println("[+] Depth: ", count)
@@ -187,27 +216,10 @@ func main() {
 					requestPattern := *url + fullPattern
 					response := sendRequests(requestPattern, *cookies)
 
-					// hell if's to make sure that pattern is finding :)
-					matchEtcPasswd := etcPasswd.FindStringSubmatch(response)
-					if len(matchEtcPasswd) != 0 {
-						fmt.Printf(utils.SetColorGreen("---> [+] ETC/PASSWD FOUND: %s\n payload: %s \n\n"), matchEtcPasswd[1], requestPattern)
-
-					}
-
-					matchEtcHosts := etcHosts.FindStringSubmatch(response)
-					if len(matchEtcHosts) != 0 {
-						fmt.Printf("---> [+] ETC/HOSTS: %s\n payload: %s \n\n", matchEtcHosts[1], requestPattern)
-					}
-
-					matchHtAcess := htAcess.FindStringSubmatch(response)
-					if len(matchHtAcess) != 0 {
-						fmt.Printf("---> [+] HTACESS FOUND: %s\n payload: %s\n\n", matchHtAcess[1], requestPattern)
-					}
-
-					matchShadow := etcShadow.FindStringSubmatch(response)
-					if len(matchShadow) != 0 {
-						fmt.Printf("---> [+] ETC/SHADOW FOUND: %s\n payload: %s\n\n", matchShadow[1], requestPattern)
-					}
+					go findETCPasswd(response)
+					go findETCHosts(response)
+					go findHtAcess(response)
+					go findetcShadow(response)
 
 				}
 			}
