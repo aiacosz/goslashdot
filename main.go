@@ -9,6 +9,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"./utils"
 )
@@ -220,10 +221,12 @@ func main() {
 					go findETCHosts(response, requestPattern)
 					go findHtAcess(response, requestPattern)
 					go findetcShadow(response, requestPattern)
+					time.Sleep(3000 * time.Millisecond)
 
 				}
 			}
 		}
 		count++
 	}
+	fmt.Println(utils.SetColorYela("[+] All routines are finished !"))
 }
