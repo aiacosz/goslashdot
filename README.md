@@ -10,13 +10,12 @@ Steps to use:
 1 - put * on endpoint that you would like to brute all camps that you would put * will be brute forced.
 2 - Choose the deep recursive.. with -goin flag the default is 3
 
-
-
-
 ```
 
 ![alt text](https://raw.githubusercontent.com/aiacosz/goslashdot/master/found3.png)
 
+
+![Imgur Image](http://i.imgur.com/JrLGMiN.png)
 
 
 ###### TODO
