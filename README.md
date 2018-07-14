@@ -11,12 +11,7 @@ Steps to use:
 2 - Choose the deep recursive.. with -goin flag the default is 3
 
 ```
-
-![alt text](https://raw.githubusercontent.com/aiacosz/goslashdot/master/found3.png)
-
-
-![Imgur Image](http://i.imgur.com/JrLGMiN.png)
-
+![Imgur Image](ttp://i.imgur.com/DvamvJe.png)
 
 ###### TODO
 
