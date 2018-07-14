@@ -11,7 +11,7 @@ Steps to use:
 2 - Choose the deep recursive.. with -goin flag the default is 3
 
 ```
-![Imgur Image](ttp://i.imgur.com/DvamvJe.png)
+![Imgur Image](http://i.imgur.com/DvamvJe.png)
 
 ###### TODO
 
