@@ -189,6 +189,14 @@ func findetcShadow(response string, requestPattern string) {
 
 }
 
+func findSystem32(response string, requestPattern string) {
+	sys32 := regexp.MustCompile(`[^]*?`)
+	mathSys32 := sys32.FindStringSubmatch(response)
+	if len(mathSys32) != 0 {
+		fmt.Printf("---> [+] Sys32 FOUND: %s \n payload: %s ", mathSys32[1], requestPattern)
+	}
+}
+
 func main() {
 
 	utils.Banner()
