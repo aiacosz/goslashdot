@@ -122,21 +122,9 @@ func sendRequests(url string, cookies string) string {
 	return string(body)
 }
 
-func validateInput(url string, endpoint string) {
+func validateInput(url string) {
 	if url == "" {
 		fmt.Println("[-] URL not defined.. ")
-		os.Exit(0)
-	}
-
-	if endpoint == "" {
-		fmt.Println("[-] endpoint not defined.. ")
-		os.Exit(0)
-	}
-}
-
-func validateURLendPoints(url string, endPoint string) {
-	if !strings.Contains(url, endPoint) {
-		fmt.Println("[-] Endpoint not found in URL !")
 		os.Exit(0)
 	}
 }
@@ -202,19 +190,16 @@ func main() {
 	utils.Banner()
 
 	url := flag.String("url", "", "url from target")
-	endPoint := flag.String("endpoint", "", "String in --url to attack. Ex: document.pdf")
 	cookies := flag.String("cookies", "", "Cookies from authenticated path")
 	goin := flag.Int("goin", 3, "max of recursive ../../../ default: 3")
 	flag.Parse()
 
 	// checking inputs
-	validateInput(*url, *endPoint)
+	validateInput(*url)
 	validateURL(*url)
-	validateURLendPoints(*url, *endPoint)
 
 	// info prints
 	fmt.Println("[+]TARGET: ", utils.SetColorBlue(*url))
-	fmt.Println("[+]ENDPOINT SET: ", utils.SetColorBlue(*endPoint))
 	fmt.Println("[+]DEPH SET: ", *goin)
 	if *cookies != "" {
 		fmt.Println("[+]ENDPOINT SET: ", utils.SetColorBlue(*cookies))
