@@ -3,7 +3,7 @@
 ### Tool to find Path Traversal.
 
 ```
-Parcial usage:  go run main.go -url https://www.example/content.php?seite=* -endpoint php?seite= 
+Parcial usage:  go run main.go -url https://www.example/content.php?seite=* 
 
 Steps to use:
 
